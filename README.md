@@ -4,7 +4,7 @@
 - Run `npm start`
 - Server will run locally on port 4000
 
-### A basic query to get a list of Links:
+### A query to get a list of Links:
 ```
 query {
   feed {
@@ -15,7 +15,17 @@ query {
 }
 ```
 
-### A basic mutation to create a new Link:
+### A query for a specific link by id:
+```
+query {
+  link(id: "link-2")
+  {
+    description
+  }
+}
+```
+
+### A mutation to create a new Link:
 ```
 mutation {
   post(
@@ -23,6 +33,30 @@ mutation {
     description: "prisma replaces traditional ORMs"
   ) {
     id
+  }
+}
+```
+
+### A update mutation:
+```
+mutation {
+  updateLink(
+    id: "link-1",
+    description: "this needed changed"
+  ) {
+    id
+  }
+}
+```
+
+### A mutation to delete by id
+```
+mutation {
+  deleteLink(id: "link-0")
+  {
+    id
+    description
+    url
   }
 }
 ```
