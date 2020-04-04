@@ -1,6 +1,6 @@
 const {GraphQLServer} = require('graphql-yoga');
 
-// Dummy Data
+// Dummy Data to start with
 let links = [{
     id: 'link-0',
     url: 'www.howtographql.com',
@@ -9,11 +9,11 @@ let links = [{
 
 let idCount = links.length;
 
-// Implementation of the Schema
 const resolvers = {
     Query: {
         info: () => `This is the API of Hackernews Clone`,
-        feed: () => links
+        feed: () => links,
+        link: (parent, args) => links.find(({id}) => id === args.id)
     },
     Mutation: {
         post: (parent, args) => {
@@ -26,15 +26,26 @@ const resolvers = {
             links.push(link);
 
             return link;
+        },
+        updateLink: (parent, args) => {
+            const index = links.findIndex(({id}) => id === args.id);
+            const updatedLink = {
+                id: args.id,
+                description: args.description || links[index].description,
+                url: args.url || links[index].url,
+            };
+
+            links[index] = updatedLink;
+            
+            return updatedLink;
+        },
+        deleteLink: (parent, args) => {
+            const index = links.findIndex(({id}) => id === args.id);
+            const [linkToDelete] = links.splice(index, 1);
+
+            return linkToDelete;
         }
     }
-    
-    // Can remove the Link. GraphQL infers what this looks like
-    // Link: {
-    //     id: (parent) => parent.id,
-    //     description: (parent) => parent.description,
-    //     url: (parent) => parent.url
-    // }
 };
 
 const server = new GraphQLServer({
