@@ -31,27 +31,47 @@ async function login(parent, args, context, info) {
 function post(parent, args, context, info) {
     const userId = getUserId(context);
 
-    return context.prisma.createLink({
-        url: args.url,
-        description: args.description,
-        postedBy: {connect: {id: userId}}
-    });
+    if (userId) {
+        try {
+            return context.prisma.createLink({
+                url: args.url,
+                description: args.description,
+                postedBy: {connect: {id: userId}}
+            });
+        } catch(error) {
+            throw new Error(error);
+        }
+    }
+
+    throw new Error('User id not found');
 }
 
 async function updateLink(parent, args, context, info) {
-    const {id, ...data} = args;
+    const isAuthorized = getIsAuthorized(context);
 
-    return await context.prisma.updateLink({
-        data,
-        where: {id}
-    });
+    if (isAuthorized) {
+        const {id, ...data} = args;
+
+        try {
+            return await context.prisma.updateLink({
+                data,
+                where: {id}
+            });
+        } catch(error) {
+            throw new Error(error);
+        }
+    }
 }
 
 async function deleteLink(parent, args, context, info) {
-    try {
-        return await context.prisma.deleteLink({id: args.id});
-    } catch(err) {
-        throw new Error(err);
+    const isAuthorized = getIsAuthorized(context);
+
+    if (isAuthorized) {
+        try {
+            return await context.prisma.deleteLink({id: args.id});
+        } catch(err) {
+            throw new Error(err);
+        }
     }
 }
 

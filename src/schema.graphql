@@ -2,6 +2,7 @@
         info: String!
         feed: [Link!]!
         link(id: ID!): Link
+        linksForUser(id: ID!): [Link]
     }
 
     type Mutation {
