@@ -38,29 +38,28 @@ function post(parent, args, context, info) {
     });
 }
 
-// function updateLink(parent, args, context, info) {
-//     const index = links.findIndex(({id}) => id === args.id);
-//     const updatedLink = {
-//         id: args.id,
-//         description: args.description || links[index].description,
-//         url: args.url || links[index].url,
-//     };
+async function updateLink(parent, args, context, info) {
+    const {id, ...data} = args;
 
-//     links[index] = updatedLink;
-    
-//     return updatedLink;
-// }
+    return await context.prisma.updateLink({
+        data,
+        where: {id}
+    });
+}
 
-// function deleteLink(parent, args, context, info) {
-//     const index = links.findIndex(({id}) => id === args.id);
-//     const [linkToDelete] = links.splice(index, 1);
-
-//     return linkToDelete;
-// }
+async function deleteLink(parent, args, context, info) {
+    try {
+        return await context.prisma.deleteLink({id: args.id});
+    } catch(err) {
+        throw new Error(err);
+    }
+}
 
 module.exports = {
     signup,
     login,
-    post
+    post,
+    updateLink,
+    deleteLink
 };
 
