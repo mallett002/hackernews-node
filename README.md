@@ -1,4 +1,4 @@
-# GraphQL Tutorial
+# Hackernews Node
 
 ### To The Start Server
 - Run `npm start`
